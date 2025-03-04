@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContextAlert from '../../components/ContextAlert.astro';
+import Markdown from '../../components/Markdown.astro';
+
+// Get all markdown files from the blog directory
+const posts = await Astro.glob('./posts/*.md');
+// Sort posts by date (most recent first)
+const sortedPosts = posts.sort((a, b) => {
+    return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+});
+
+const explainer = `
+# Welcome to the Blog
+
+This page demonstrates using Astro's content collections for a blog with Markdown files.
+Each post is statically generated at build time, but could use Astro's hybrid rendering
+for dynamic content as well.
+`;
+---
+
+<Layout title="Blog | Netlify Platform Starter for Astro">
+    <ContextAlert class="mb-4" />
+    <h1 class="mb-8">Blog</h1>
+    <Markdown content={explainer} class="mb-10" />
+
+    <div class="grid gap-8 md:grid-cols-2">
+        {
+            sortedPosts.map((post) => (
+                <a href={post.url} class="no-underline">
+                    <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                        <div class="p-6">
+                            <p class="text-neutral-500 text-sm mb-2">{new Date(post.frontmatter.date).toLocaleDateString()}</p>
+                            <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.frontmatter.title}</h2>
+                            <p class="line-clamp-3">{post.frontmatter.description}</p>
+                        </div>
+                    </div>
+                </a>
+            ))
+        }
+    </div>
+</Layout>
+
