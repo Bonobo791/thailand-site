@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ContextAlert from '../components/ContextAlert.astro';
 import Markdown from '../components/Markdown.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Get all pages
 const allPages = await getCollection('pages');
@@ -34,7 +34,22 @@ const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => (
 }));
 
 // Featured pages (if any)
-const featuredPages = allPages.filter((page) => page.data.featured);
+const featuredPages = allPages.filter((page: CollectionEntry<'pages'>) => page.data.featured);
+
+// Fix for lastUpdated - ensure it's a Date object before calling toLocaleDateString
+const formattedFeaturedPages = featuredPages.map((page: CollectionEntry<'pages'>) => {
+    return {
+        ...page,
+        formattedDate:
+            page.data.lastUpdated instanceof Date
+                ? page.data.lastUpdated.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                  })
+                : 'Date not available'
+    };
+});
 
 const explainer = `
 # Welcome to our Content Hub
@@ -48,103 +63,50 @@ Browse topics and pages organized by subject areas and categories.
     <h1 class="mb-8">Topics</h1>
     <Markdown content={explainer} class="mb-10" />
 
-    {/* Topics List */}
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-16">
-        {
-            topics.map((topic) => (
-                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden">
-                    <div class="p-6">
-                        <h2 class="text-xl font-bold text-neutral-900 mb-3">
-                            <a href={`/${topic.name}`} class="hover:underline">
-                                {topic.name.charAt(0).toUpperCase() + topic.name.slice(1)}
-                            </a>
-                        </h2>
-
-                        {topic.subtopics.length > 0 && (
-                            <div class="mb-4">
-                                <p class="text-sm text-neutral-500 mb-2">Subtopics:</p>
-                                <div class="flex flex-wrap gap-1">
-                                    {topic.subtopics.map((subtopic) => (
-                                        <a href={`/${topic.name}/${subtopic}`} class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200">
-                                            {subtopic}
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        <a href={`/${topic.name}`} class="text-sm text-primary hover:underline">
-                            View all pages →
-                        </a>
-                    </div>
-                </div>
-            ))
-        }
-    </div>
-
-    {/* Featured Pages Section (if any) */}
+    <!-- Featured Pages Section -->
     {
         featuredPages.length > 0 && (
-            <div class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">Featured Pages</h2>
-                <div class="grid gap-8 md:grid-cols-2">
-                    {featuredPages.map((page) => {
-                        const pathParts = page.slug.split('/');
-                        const topic = pathParts[0];
-                        const subtopic = pathParts.length > 1 ? pathParts[1] : null;
-
-                        return (
-                            <a href={`/${page.slug}`} class="no-underline">
-                                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                                    <div class="p-6">
-                                        <p class="text-neutral-500 text-sm mb-2">
-                                            {page.data.lastUpdated?.toLocaleDateString() || ''}
-                                            {topic && ` | ${topic}`}
-                                            {subtopic && ` › ${subtopic}`}
-                                        </p>
-                                        <h3 class="text-xl font-bold text-neutral-900 mb-2">{page.data.title}</h3>
-                                        <p class="line-clamp-3">{page.data.description}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        );
-                    })}
+            <div class="mb-12">
+                <h2 class="mb-4">Featured Content</h2>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {formattedFeaturedPages.map((page) => (
+                        <div class="p-6 bg-white rounded-lg shadow-md">
+                            <h3 class="mb-2 text-xl font-semibold text-gray-800">{page.data.title}</h3>
+                            <p class="mb-4 text-gray-600">{page.data.description}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">{page.formattedDate}</span>
+                                <a href={`/${page.slug}`} class="text-blue-500 hover:underline">
+                                    Read more →
+                                </a>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         )
     }
 
-    {/* Recent Pages */}
-    <div>
-        <h2 class="text-2xl font-bold mb-6">Recently Updated Pages</h2>
-        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {
-                allPages
-                    .filter((page) => page.data.lastUpdated)
-                    .sort((a, b) => (b.data.lastUpdated?.getTime() || 0) - (a.data.lastUpdated?.getTime() || 0))
-                    .slice(0, 6)
-                    .map((page) => {
-                        const pathParts = page.slug.split('/');
-                        const topic = pathParts[0];
-                        const subtopic = pathParts.length > 1 ? pathParts[1] : null;
-
-                        return (
-                            <a href={`/${page.slug}`} class="no-underline">
-                                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                                    <div class="p-6">
-                                        <p class="text-neutral-500 text-sm mb-2">
-                                            {page.data.lastUpdated?.toLocaleDateString() || ''}
-                                            {topic && ` | ${topic}`}
-                                            {subtopic && ` › ${subtopic}`}
-                                        </p>
-                                        <h3 class="text-lg font-bold text-neutral-900 mb-2">{page.data.title}</h3>
-                                        <p class="line-clamp-2 text-sm">{page.data.description}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        );
-                    })
-            }
-        </div>
+    <!-- Topics Section -->
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {
+            topics.map((topic) => (
+                <div class="p-6 bg-white rounded-lg shadow-md">
+                    <h2 class="mb-4 text-xl font-semibold text-gray-800 capitalize">{topic.name.replace(/-/g, ' ')}</h2>
+                    {topic.subtopics.length > 0 ? (
+                        <ul class="space-y-2">
+                            {topic.subtopics.map((subtopic) => (
+                                <li>
+                                    <a href={`/${topic.name}/${subtopic}`} class="text-blue-500 hover:underline capitalize">
+                                        {subtopic.replace(/-/g, ' ')}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p class="text-gray-600">No subcategories found.</p>
+                    )}
+                </div>
+            ))
+        }
     </div>
 </Layout>

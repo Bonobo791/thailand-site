@@ -1,0 +1,51 @@
+/* Global Markdown Styles */
+.markdown-content ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+}
+
+.markdown-content h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.markdown-content .code-block-wrapper {
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.markdown-content .code-block-header {
+    background-color: #2d2d2d;
+    color: #e6e6e6;
+    padding: 0.5rem 1rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.markdown-content pre {
+    margin: 0;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    overflow-x: auto;
+}
+
+.markdown-content code {
+    font-family:
+        Menlo,
+        Monaco,
+        Lucida Console,
+        Liberation Mono,
+        DejaVu Sans Mono,
+        Bitstream Vera Sans Mono,
+        Courier New,
+        monospace;
+    font-size: 0.875rem;
+} 

@@ -1,7 +1,7 @@
 ---
 title: "Koh Samui Travel Guide"
 description: "Everything you need to know about visiting Koh Samui, Thailand's second-largest island"
-lastUpdated: 2023-12-10
+lastUpdated: "2023-12-10"
 order: 2
 featured: true
 ---
