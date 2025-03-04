@@ -36,7 +36,7 @@ const html = await marked.parse(content || '');
 ---
 
 <div class={`markdown-content ${className}`}>
-    {@html html}
+    <Fragment set:html={html} />
 </div>
 
 <style>
