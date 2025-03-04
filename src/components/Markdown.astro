@@ -1,5 +1,5 @@
 ---
-import { Marked } from 'marked';
+import { marked } from 'marked';
 import markedShiki from 'marked-shiki';
 import { createHighlighter } from 'shiki';
 
@@ -18,23 +18,25 @@ const highlighter = await createHighlighter({
     langs: ['jsx', 'js'],
     themes: ['min-dark']
 });
-const marked = new Marked();
-const html = await marked
-    .use(
-        markedShiki({
-            highlight(code: string, lang: string, props: any) {
-                return highlighter.codeToHtml(code, {
-                    lang,
-                    theme: 'min-dark'
-                });
-            }
-        })
-    )
-    .parse(content || '');
+
+// Register the marked‑shiki extension with marked.
+marked.use(
+    markedShiki({
+        highlight(code: string, lang: string, props: any) {
+            return highlighter.codeToHtml(code, {
+                lang,
+                theme: 'min-dark'
+            });
+        }
+    })
+);
+
+// Parse the Markdown content.
+const html = await marked.parse(content || '');
 ---
 
 <div class={`markdown-content ${className}`}>
-    <Fragment set:html={html} />
+    {@html html}
 </div>
 
 <style>

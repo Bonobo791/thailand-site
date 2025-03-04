@@ -4,59 +4,42 @@ import ContextAlert from '../components/ContextAlert.astro';
 import Markdown from '../components/Markdown.astro';
 import { getCollection } from 'astro:content';
 
-// Add proper type definitions for your data structures
-interface Post {
-    // Match the actual structure from content collections
-    slug: string;
-    data: {
-        title: string;
-        description: string;
-        date: Date;
-        topic: string;
-        subtopic?: string;
-        featured?: boolean;
-    };
-}
+// Get all pages
+const allPages = await getCollection('pages');
 
-interface Topic {
-    name: string;
-    subtopics: string[];
-}
-
-// Get all blog entries
-const allPosts = await getCollection('blog');
-
-// Sort posts by date (most recent first)
-const sortedPosts = allPosts.sort((a: Post, b: Post) => b.data.date.getTime() - a.data.date.getTime());
-
-// Featured posts (if any)
-const featuredPosts = sortedPosts.filter((post: Post) => post.data.featured);
-
-// Extract topics with their subtopics
+// Extract topics from directory structure
 const topicsMap = new Map<string, Set<string>>();
 
-sortedPosts.forEach((post: Post) => {
-    const { topic, subtopic } = post.data;
+allPages.forEach((page) => {
+    const pathParts = page.slug.split('/');
 
-    if (!topicsMap.has(topic)) {
-        topicsMap.set(topic, new Set<string>());
-    }
+    if (pathParts.length > 0) {
+        const topic = pathParts[0];
+        const subtopic = pathParts.length > 1 ? pathParts[1] : null;
 
-    if (subtopic) {
-        topicsMap.get(topic)!.add(subtopic);
+        if (!topicsMap.has(topic)) {
+            topicsMap.set(topic, new Set<string>());
+        }
+
+        if (subtopic) {
+            topicsMap.get(topic)!.add(subtopic);
+        }
     }
 });
 
 // Convert the Map to an array of objects for easier template rendering
-const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]: [string, Set<string>]) => ({
+const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => ({
     name: topicName,
     subtopics: Array.from(subtopics)
 }));
 
+// Featured pages (if any)
+const featuredPages = allPages.filter((page) => page.data.featured);
+
 const explainer = `
 # Welcome to our Content Hub
 
-Browse topics and posts organized by subject areas and categories.
+Browse topics and pages organized by subject areas and categories.
 `;
 ---
 
@@ -68,11 +51,11 @@ Browse topics and posts organized by subject areas and categories.
     {/* Topics List */}
     <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-16">
         {
-            topics.map((topic: Topic) => (
+            topics.map((topic) => (
                 <div class="bg-white text-neutral-700 rounded-lg overflow-hidden">
                     <div class="p-6">
                         <h2 class="text-xl font-bold text-neutral-900 mb-3">
-                            <a href={`/blog/topic/${topic.name}`} class="hover:underline">
+                            <a href={`/${topic.name}`} class="hover:underline">
                                 {topic.name.charAt(0).toUpperCase() + topic.name.slice(1)}
                             </a>
                         </h2>
@@ -82,10 +65,7 @@ Browse topics and posts organized by subject areas and categories.
                                 <p class="text-sm text-neutral-500 mb-2">Subtopics:</p>
                                 <div class="flex flex-wrap gap-1">
                                     {topic.subtopics.map((subtopic) => (
-                                        <a
-                                            href={`/blog/topic/${topic.name}/${subtopic}`}
-                                            class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200"
-                                        >
+                                        <a href={`/${topic.name}/${subtopic}`} class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200">
                                             {subtopic}
                                         </a>
                                     ))}
@@ -93,8 +73,8 @@ Browse topics and posts organized by subject areas and categories.
                             </div>
                         )}
 
-                        <a href={`/blog/topic/${topic.name}`} class="text-sm text-primary hover:underline">
-                            View all posts →
+                        <a href={`/${topic.name}`} class="text-sm text-primary hover:underline">
+                            View all pages →
                         </a>
                     </div>
                 </div>
@@ -102,50 +82,68 @@ Browse topics and posts organized by subject areas and categories.
         }
     </div>
 
-    {/* Featured Posts Section (if any) */}
+    {/* Featured Pages Section (if any) */}
     {
-        featuredPosts.length > 0 && (
+        featuredPages.length > 0 && (
             <div class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">Featured Posts</h2>
+                <h2 class="text-2xl font-bold mb-6">Featured Pages</h2>
                 <div class="grid gap-8 md:grid-cols-2">
-                    {featuredPosts.map((post: Post) => (
-                        <a href={`/post/${post.slug}`} class="no-underline">
-                            <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                                <div class="p-6">
-                                    <p class="text-neutral-500 text-sm mb-2">
-                                        {post.data.date.toLocaleDateString()} | {post.data.topic}
-                                        {post.data.subtopic && ` › ${post.data.subtopic}`}
-                                    </p>
-                                    <h3 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h3>
-                                    <p class="line-clamp-3">{post.data.description}</p>
+                    {featuredPages.map((page) => {
+                        const pathParts = page.slug.split('/');
+                        const topic = pathParts[0];
+                        const subtopic = pathParts.length > 1 ? pathParts[1] : null;
+
+                        return (
+                            <a href={`/${page.slug}`} class="no-underline">
+                                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                                    <div class="p-6">
+                                        <p class="text-neutral-500 text-sm mb-2">
+                                            {page.data.lastUpdated?.toLocaleDateString() || ''}
+                                            {topic && ` | ${topic}`}
+                                            {subtopic && ` › ${subtopic}`}
+                                        </p>
+                                        <h3 class="text-xl font-bold text-neutral-900 mb-2">{page.data.title}</h3>
+                                        <p class="line-clamp-3">{page.data.description}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    ))}
+                            </a>
+                        );
+                    })}
                 </div>
             </div>
         )
     }
 
-    {/* Recent Posts Section */}
+    {/* Recent Pages */}
     <div>
-        <h2 class="text-2xl font-bold mb-6">Recent Posts</h2>
+        <h2 class="text-2xl font-bold mb-6">Recently Updated Pages</h2>
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {
-                sortedPosts.slice(0, 6).map((post: Post) => (
-                    <a href={`/post/${post.slug}`} class="no-underline">
-                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                            <div class="p-6">
-                                <p class="text-neutral-500 text-sm mb-2">
-                                    {post.data.date.toLocaleDateString()} | {post.data.topic}
-                                    {post.data.subtopic && ` › ${post.data.subtopic}`}
-                                </p>
-                                <h3 class="text-lg font-bold text-neutral-900 mb-2">{post.data.title}</h3>
-                                <p class="line-clamp-2 text-sm">{post.data.description}</p>
-                            </div>
-                        </div>
-                    </a>
-                ))
+                allPages
+                    .filter((page) => page.data.lastUpdated)
+                    .sort((a, b) => (b.data.lastUpdated?.getTime() || 0) - (a.data.lastUpdated?.getTime() || 0))
+                    .slice(0, 6)
+                    .map((page) => {
+                        const pathParts = page.slug.split('/');
+                        const topic = pathParts[0];
+                        const subtopic = pathParts.length > 1 ? pathParts[1] : null;
+
+                        return (
+                            <a href={`/${page.slug}`} class="no-underline">
+                                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                                    <div class="p-6">
+                                        <p class="text-neutral-500 text-sm mb-2">
+                                            {page.data.lastUpdated?.toLocaleDateString() || ''}
+                                            {topic && ` | ${topic}`}
+                                            {subtopic && ` › ${subtopic}`}
+                                        </p>
+                                        <h3 class="text-lg font-bold text-neutral-900 mb-2">{page.data.title}</h3>
+                                        <p class="line-clamp-2 text-sm">{page.data.description}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        );
+                    })
             }
         </div>
     </div>

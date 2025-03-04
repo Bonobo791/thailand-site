@@ -8,12 +8,12 @@ import interFont800 from '@fontsource/inter/files/inter-latin-800-normal.woff2?u
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-export interface Props {
+interface Props {
     title: string;
     description?: string;
 }
 
-const { title, description = 'Default description' } = Astro.props;
+const { title, description = 'Default site description' } = Astro.props;
 ---
 
 <!doctype html>

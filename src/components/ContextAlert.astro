@@ -1,11 +1,11 @@
 ---
 export interface Props {
-    message: string;
+    message?: string;
     type?: 'info' | 'warning' | 'error';
     class?: string;
 }
 
-const { message, type = 'info', class: className = '' } = Astro.props;
+const { message = '', type = 'info', class: className = '' } = Astro.props;
 
 const bgColors = {
     info: 'bg-blue-100 text-blue-800',

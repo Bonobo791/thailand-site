@@ -11,8 +11,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "noImplicitAny": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,

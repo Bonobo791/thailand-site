@@ -1,19 +1,17 @@
 import { defineCollection, z } from 'astro:content';
 
-// Define a schema for blog posts
-const blogCollection = defineCollection({
+// Define a schema for pages
+const pagesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(),
-    pubDate: z.date(),
-    updatedDate: z.date().optional(),
-    author: z.string().optional(),
-    image: z.string().optional(),
-    tags: z.array(z.string()).optional()
+    description: z.string(),
+    lastUpdated: z.date().optional(),
+    order: z.number().optional(),
+    featured: z.boolean().optional().default(false),
   }),
 });
 
 // Export the collections
 export const collections = {
-  'blog': blogCollection,
+  'pages': pagesCollection,
 }; 
