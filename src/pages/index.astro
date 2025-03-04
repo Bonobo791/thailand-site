@@ -2,20 +2,148 @@
 import Layout from '../layouts/Layout.astro';
 import ContextAlert from '../components/ContextAlert.astro';
 import Markdown from '../components/Markdown.astro';
+import { getCollection } from 'astro:content';
+
+// Add proper type definitions for your data structures
+interface Post {
+    // Match the actual structure from content collections
+    slug: string;
+    data: {
+        title: string;
+        description: string;
+        date: Date;
+        topic: string;
+        subtopic?: string;
+        featured?: boolean;
+    };
+}
+
+interface Topic {
+    name: string;
+    subtopics: string[];
+}
+
+// Get all blog entries
+const allPosts = await getCollection('blog');
+
+// Sort posts by date (most recent first)
+const sortedPosts = allPosts.sort((a: Post, b: Post) => b.data.date.getTime() - a.data.date.getTime());
+
+// Featured posts (if any)
+const featuredPosts = sortedPosts.filter((post: Post) => post.data.featured);
+
+// Extract topics with their subtopics
+const topicsMap = new Map<string, Set<string>>();
+
+sortedPosts.forEach((post: Post) => {
+    const { topic, subtopic } = post.data;
+
+    if (!topicsMap.has(topic)) {
+        topicsMap.set(topic, new Set<string>());
+    }
+
+    if (subtopic) {
+        topicsMap.get(topic)!.add(subtopic);
+    }
+});
+
+// Convert the Map to an array of objects for easier template rendering
+const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]: [string, Set<string>]) => ({
+    name: topicName,
+    subtopics: Array.from(subtopics)
+}));
 
 const explainer = `
-An Astro website can go way beyond static pages - on the right platform.
+# Welcome to our Content Hub
 
-Netlify supports not only [Streaming SSR](https://docs.astro.build/en/guides/server-side-rendering/#html-streaming) and fast [Edge Middleware](https://docs.astro.build/en/guides/middleware/), but also [on-demand revalidation](https://www.netlify.com/blog/cache-tags-and-purge-api-on-netlify/) and [stale-while-revalidate](https://www.netlify.com/blog/swr-and-fine-grained-cache-control/). 
-Any page or data can be rebuilt only when needed, without site visitors ever getting a performance hit.
+Browse topics and posts organized by subject areas and categories.
 `;
 ---
 
-<Layout title="Welcome to Astro.">
-    <ContextAlert class="mb-4" />
-    <h1 class="mb-10">Netlify Platform Starter for Astro</h1>
-    <Markdown content={explainer} class="text-lg mb-10" />
-    <p class="mb-8">
-        <a href="https://docs.netlify.com/frameworks/astro/" class="btn btn-lg btn-primary sm:btn-wide">Read the Docs</a>
-    </p>
+<Layout title="Content Hub">
+    <ContextAlert className="mb-4" />
+    <h1 class="mb-8">Topics</h1>
+    <Markdown content={explainer} class="mb-10" />
+
+    {/* Topics List */}
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-16">
+        {
+            topics.map((topic: Topic) => (
+                <div class="bg-white text-neutral-700 rounded-lg overflow-hidden">
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold text-neutral-900 mb-3">
+                            <a href={`/${topic.name}`} class="hover:underline">
+                                {topic.name.charAt(0).toUpperCase() + topic.name.slice(1)}
+                            </a>
+                        </h2>
+
+                        {topic.subtopics.length > 0 && (
+                            <div class="mb-4">
+                                <p class="text-sm text-neutral-500 mb-2">Subtopics:</p>
+                                <div class="flex flex-wrap gap-1">
+                                    {topic.subtopics.map((subtopic) => (
+                                        <a href={`/${topic.name}/${subtopic}`} class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200">
+                                            {subtopic}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <a href={`/${topic.name}`} class="text-sm text-primary hover:underline">
+                            View all posts →
+                        </a>
+                    </div>
+                </div>
+            ))
+        }
+    </div>
+
+    {/* Featured Posts Section (if any) */}
+    {
+        featuredPosts.length > 0 && (
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Featured Posts</h2>
+                <div class="grid gap-8 md:grid-cols-2">
+                    {featuredPosts.map((post: Post) => (
+                        <a href={`/post/${post.slug}`} class="no-underline">
+                            <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                                <div class="p-6">
+                                    <p class="text-neutral-500 text-sm mb-2">
+                                        {post.data.date.toLocaleDateString()} | {post.data.topic}
+                                        {post.data.subtopic && ` › ${post.data.subtopic}`}
+                                    </p>
+                                    <h3 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h3>
+                                    <p class="line-clamp-3">{post.data.description}</p>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    {/* Recent Posts Section */}
+    <div>
+        <h2 class="text-2xl font-bold mb-6">Recent Posts</h2>
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {
+                sortedPosts.slice(0, 6).map((post: Post) => (
+                    <a href={`/post/${post.slug}`} class="no-underline">
+                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                            <div class="p-6">
+                                <p class="text-neutral-500 text-sm mb-2">
+                                    {post.data.date.toLocaleDateString()} | {post.data.topic}
+                                    {post.data.subtopic && ` › ${post.data.subtopic}`}
+                                </p>
+                                <h3 class="text-lg font-bold text-neutral-900 mb-2">{post.data.title}</h3>
+                                <p class="line-clamp-2 text-sm">{post.data.description}</p>
+                            </div>
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
 </Layout>

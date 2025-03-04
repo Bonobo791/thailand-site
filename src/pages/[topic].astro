@@ -1,0 +1,101 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContextAlert from '../components/ContextAlert.astro';
+import Markdown from '../components/Markdown.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog');
+
+    // Extract all unique topics
+    const topics = [...new Set(allPosts.map((post) => post.data.topic))];
+
+    // Create topic pages
+    return topics.map((topic) => {
+        const topicPosts = allPosts.filter((post) => post.data.topic === topic);
+        const relatedSubtopics = [...new Set(topicPosts.filter((post) => post.data.subtopic).map((post) => post.data.subtopic))];
+
+        return {
+            params: { topic },
+            props: {
+                topic,
+                posts: topicPosts,
+                subtopics: relatedSubtopics
+            }
+        };
+    });
+}
+
+const { topic, posts, subtopics } = Astro.props;
+
+// Sort posts by date (most recent first)
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const explainer = `# ${topic.charAt(0).toUpperCase() + topic.slice(1)}
+  
+All posts related to ${topic}.`;
+---
+
+<Layout title={`${topic.charAt(0).toUpperCase() + topic.slice(1)}`}>
+    <ContextAlert class="mb-4" />
+    <div class="mb-6 flex flex-wrap gap-4">
+        <a href="/" class="inline-flex items-center">
+            <span class="mr-2">←</span> All topics
+        </a>
+    </div>
+
+    <h1 class="mb-8">{topic.charAt(0).toUpperCase() + topic.slice(1)}</h1>
+
+    <Markdown content={explainer} class="mb-10" />
+
+    {/* Show subtopics if available */}
+    {
+        subtopics.length > 0 && (
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold mb-4">Subtopics in {topic}</h2>
+                <div class="flex flex-wrap gap-2">
+                    {subtopics.map((sub) => (
+                        <a href={`/${topic}/${sub}`} class="px-3 py-1 bg-white rounded-full hover:bg-neutral-100 transition">
+                            {sub}
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    {/* Posts List */}
+    {
+        sortedPosts.length > 0 ? (
+            <div class="grid gap-8 md:grid-cols-2">
+                {sortedPosts.map((post) => (
+                    <a href={`/post/${post.slug}`} class="no-underline">
+                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                            <div class="p-6">
+                                <p class="text-neutral-500 text-sm mb-2">
+                                    {post.data.date.toLocaleDateString()}
+                                    {post.data.subtopic && ` | ${post.data.subtopic}`}
+                                </p>
+                                <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h2>
+                                <p class="line-clamp-3">{post.data.description}</p>
+
+                                {post.data.tags && (
+                                    <div class="flex flex-wrap gap-1 mt-3">
+                                        {post.data.tags.map((tag) => (
+                                            <span class="bg-neutral-100 text-xs px-2 py-1 rounded">{tag}</span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        ) : (
+            <div class="bg-white text-neutral-700 rounded-lg p-6">
+                <p>No posts found in this topic.</p>
+            </div>
+        )
+    }
+</Layout>
+

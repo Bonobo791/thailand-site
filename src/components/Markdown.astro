@@ -1,14 +1,14 @@
 ---
-import { Marked } from 'marked';
-import markedShiki from 'marked-shiki';
+import { marked } from 'marked';
+import { markedShiki } from 'marked-shiki';
 import { getHighlighter } from 'shiki';
 
-interface Props {
+export interface Props {
     content: string;
     class?: string;
 }
 
-const { content, class: className } = Astro.props;
+const { content, class: className = '' } = Astro.props;
 
 // `getHighlighter` is async, it initializes the internal and
 // loads the languages and themes specified.
@@ -18,7 +18,7 @@ const highlighter = await getHighlighter({
     langs: ['jsx', 'js'],
     themes: ['min-dark']
 });
-const html = await new Marked()
+const html = await new marked()
     .use(
         markedShiki({
             highlight(code, lang, props) {
@@ -32,4 +32,30 @@ const html = await new Marked()
     .parse(content);
 ---
 
-<div class:list={['markdown', className]} set:html={html} />
+<div class={`markdown-content ${className}`}>
+    <Fragment set:html={html} />
+</div>
+
+<style>
+    .markdown-content {
+        /* Add your markdown styling here */
+        line-height: 1.6;
+    }
+
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .markdown-content p {
+        margin-bottom: 1rem;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+        margin-left: 2rem;
+        margin-bottom: 1rem;
+    }
+</style>

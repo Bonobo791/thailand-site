@@ -1,28 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ContextAlert from '../../components/ContextAlert.astro';
-import Markdown from '../../components/Markdown.astro';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 // Generate a path for each blog post
 export async function getStaticPaths() {
     const blogEntries = await getCollection('blog');
-
-    // Use proper Set constructor and type
-    const categories = new Set<string>();
-
-    // Ensure we have proper typing for the entries
-    return blogEntries.map((entry) => {
-        // Add proper typing if this is accessing a category property
-        if (entry.data.category) {
-            categories.add(entry.data.category);
-        }
-
-        return {
-            params: { slug: entry.slug },
-            props: { entry }
-        };
-    });
+    return blogEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry }
+    }));
 }
 
 const { entry } = Astro.props;
@@ -34,18 +21,18 @@ const { topic, subtopic } = entry.data;
 <Layout title={entry.data.title}>
     <ContextAlert class="mb-4" />
     <div class="mb-6 flex flex-wrap gap-4">
-        <a href="/blog" class="inline-flex items-center">
+        <a href="/" class="inline-flex items-center">
             <span class="mr-2">←</span> All topics
         </a>
 
-        <a href={`/blog/topic/${topic}`} class="inline-flex items-center">
+        <a href={`/${topic}`} class="inline-flex items-center">
             <span class="mr-2">←</span>
             {topic}
         </a>
 
         {
             subtopic && (
-                <a href={`/blog/topic/${topic}/${subtopic}`} class="inline-flex items-center">
+                <a href={`/${topic}/${subtopic}`} class="inline-flex items-center">
                     <span class="mr-2">←</span> {subtopic}
                 </a>
             )
@@ -55,14 +42,14 @@ const { topic, subtopic } = entry.data;
     <div class="bg-white rounded-lg p-8 text-neutral-700">
         <div class="mb-6">
             <div class="mb-3">
-                <a href={`/blog/topic/${topic}`} class="text-sm text-neutral-500 hover:underline mr-2">
+                <a href={`/${topic}`} class="text-sm text-neutral-500 hover:underline mr-2">
                     {topic}
                 </a>
                 {
                     subtopic && (
                         <>
                             <span class="text-neutral-300 mx-1">›</span>
-                            <a href={`/blog/topic/${topic}/${subtopic}`} class="text-sm text-neutral-500 hover:underline">
+                            <a href={`/${topic}/${subtopic}`} class="text-sm text-neutral-500 hover:underline">
                                 {subtopic}
                             </a>
                         </>
@@ -70,7 +57,7 @@ const { topic, subtopic } = entry.data;
                 }
             </div>
 
-            <p class="text-neutral-500 mb-2">{entry.data.pubDate.toLocaleDateString()}</p>
+            <p class="text-neutral-500 mb-2">{entry.data.date.toLocaleDateString()}</p>
             <h1 class="text-3xl font-bold text-neutral-900">{entry.data.title}</h1>
 
             {
@@ -89,3 +76,4 @@ const { topic, subtopic } = entry.data;
         </div>
     </div>
 </Layout>
+
