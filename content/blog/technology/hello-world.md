@@ -1,8 +1,10 @@
 ---
-layout: "../../../layouts/Layout.astro"
 title: "Hello World"
 description: "This is our first blog post with Astro"
-date: "2023-10-25"
+date: 2023-10-25
+topic: "technology"
+subtopic: "web development"
+tags: ["astro", "markdown", "blogging"]
 ---
 
 # Hello World!

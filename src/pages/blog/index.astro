@@ -2,20 +2,43 @@
 import Layout from '../../layouts/Layout.astro';
 import ContextAlert from '../../components/ContextAlert.astro';
 import Markdown from '../../components/Markdown.astro';
+import { getCollection } from 'astro:content';
 
-// Get all markdown files from the blog directory
-const posts = await Astro.glob('./posts/*.md');
+// Get all blog entries
+const allPosts = await getCollection('blog');
+
 // Sort posts by date (most recent first)
-const sortedPosts = posts.sort((a, b) => {
-    return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+const sortedPosts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Featured posts (if any)
+const featuredPosts = sortedPosts.filter((post) => post.data.featured);
+
+// Extract topics with their subtopics
+const topicsMap = new Map();
+
+sortedPosts.forEach((post) => {
+    const { topic, subtopic } = post.data;
+
+    if (!topicsMap.has(topic)) {
+        topicsMap.set(topic, new Set());
+    }
+
+    if (subtopic) {
+        topicsMap.get(topic).add(subtopic);
+    }
 });
+
+// Convert the Map to an array of objects for easier template rendering
+const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => ({
+    name: topicName,
+    subtopics: Array.from(subtopics)
+}));
 
 const explainer = `
 # Welcome to the Blog
 
-This page demonstrates using Astro's content collections for a blog with Markdown files.
-Each post is statically generated at build time, but could use Astro's hybrid rendering
-for dynamic content as well.
+This page demonstrates using Astro's content collections for a blog with Markdown files,
+organized by topics and subtopics.
 `;
 ---
 
@@ -24,25 +47,91 @@ for dynamic content as well.
     <h1 class="mb-8">Blog</h1>
     <Markdown content={explainer} class="mb-10" />
 
-    {
-        sortedPosts.length > 0 ? (
-            <div class="grid gap-8 md:grid-cols-2">
-                {sortedPosts.map((post) => (
-                    <a href={post.url} class="no-underline">
-                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                            <div class="p-6">
-                                <p class="text-neutral-500 text-sm mb-2">{new Date(post.frontmatter.date).toLocaleDateString()}</p>
-                                <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.frontmatter.title}</h2>
-                                <p class="line-clamp-3">{post.frontmatter.description}</p>
+    {/* Topics & Subtopics Navigation */}
+    <div class="mb-12">
+        <h2 class="text-xl font-bold mb-4">Topics</h2>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {
+                topics.map((topic) => (
+                    <div class="bg-white rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-3">
+                            <a href={`/blog/topic/${topic.name}`} class="hover:underline">
+                                {topic.name.charAt(0).toUpperCase() + topic.name.slice(1)}
+                            </a>
+                        </h3>
+                        {topic.subtopics.length > 0 && (
+                            <div class="flex flex-wrap gap-2">
+                                {topic.subtopics.map((subtopic) => (
+                                    <a
+                                        href={`/blog/topic/${topic.name}/${subtopic}`}
+                                        class="text-sm px-3 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200 transition"
+                                    >
+                                        {subtopic}
+                                    </a>
+                                ))}
                             </div>
-                        </div>
-                    </a>
-                ))}
-            </div>
-        ) : (
-            <div class="bg-white text-neutral-700 rounded-lg p-6">
-                <p>No blog posts found. Add markdown files to the posts directory to see them listed here.</p>
+                        )}
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+
+    {/* Featured Posts */}
+    {
+        featuredPosts.length > 0 && (
+            <div class="mb-12">
+                <h2 class="text-xl font-bold mb-4">Featured Posts</h2>
+                <div class="grid gap-8 md:grid-cols-2">
+                    {featuredPosts.map((post) => (
+                        <a href={`/blog/${post.slug}`} class="no-underline">
+                            <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02] border-2 border-primary">
+                                <div class="p-6">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <p class="text-neutral-500 text-sm">{post.data.date.toLocaleDateString()}</p>
+                                        <span class="bg-primary text-white text-xs px-2 py-1 rounded">Featured</span>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h2>
+                                    <p class="line-clamp-3">{post.data.description}</p>
+                                    <div class="mt-3 text-sm">
+                                        <span class="font-semibold">{post.data.topic}</span>
+                                        {post.data.subtopic && ` > ${post.data.subtopic}`}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
             </div>
         )
     }
+
+    {/* Recent Posts */}
+    <div>
+        <h2 class="text-xl font-bold mb-4">Recent Posts</h2>
+        {
+            sortedPosts.length > 0 ? (
+                <div class="grid gap-8 md:grid-cols-2">
+                    {sortedPosts.slice(0, 6).map((post) => (
+                        <a href={`/blog/${post.slug}`} class="no-underline">
+                            <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                                <div class="p-6">
+                                    <p class="text-neutral-500 text-sm mb-2">
+                                        {post.data.date.toLocaleDateString()} | {post.data.topic}
+                                        {post.data.subtopic && ` > ${post.data.subtopic}`}
+                                    </p>
+                                    <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h2>
+                                    <p class="line-clamp-3">{post.data.description}</p>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            ) : (
+                <div class="bg-white text-neutral-700 rounded-lg p-6">
+                    <p>No blog posts found. Add markdown files to the content/blog directory to see them listed here.</p>
+                </div>
+            )
+        }
+    </div>
 </Layout>

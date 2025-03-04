@@ -1,0 +1,152 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ContextAlert from '../../../components/ContextAlert.astro';
+import Markdown from '../../../components/Markdown.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog');
+
+    // Generate paths for topics
+    const topicPaths = [];
+
+    // Extract all unique topics
+    const topics = [...new Set(allPosts.map((post) => post.data.topic))];
+
+    // Create topic pages
+    topics.forEach((topic) => {
+        const topicPosts = allPosts.filter((post) => post.data.topic === topic);
+        topicPaths.push({
+            params: { path: topic },
+            props: {
+                topic,
+                posts: topicPosts,
+                isSubtopic: false
+            }
+        });
+
+        // Extract subtopics for this topic
+        const subtopics = [...new Set(topicPosts.filter((post) => post.data.subtopic).map((post) => post.data.subtopic))];
+
+        // Create subtopic pages
+        subtopics.forEach((subtopic) => {
+            const subtopicPosts = topicPosts.filter((post) => post.data.subtopic === subtopic);
+            topicPaths.push({
+                params: { path: `${topic}/${subtopic}` },
+                props: {
+                    topic,
+                    subtopic,
+                    posts: subtopicPosts,
+                    isSubtopic: true
+                }
+            });
+        });
+    });
+
+    return topicPaths;
+}
+
+const { topic, subtopic, posts, isSubtopic } = Astro.props;
+
+// Sort posts by date (most recent first)
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// For subtopic pages, we need to get all subtopics of the parent topic
+let relatedSubtopics = [];
+if (!isSubtopic) {
+    relatedSubtopics = [...new Set(posts.filter((post) => post.data.subtopic).map((post) => post.data.subtopic))];
+}
+
+const pageTitle = isSubtopic ? `${subtopic} (${topic})` : topic;
+
+const explainer = isSubtopic
+    ? `# ${subtopic}
+  
+Posts in the ${subtopic} subtopic of ${topic}.`
+    : `# ${topic.charAt(0).toUpperCase() + topic.slice(1)}
+  
+All posts related to ${topic}.`;
+---
+
+<Layout title={`${pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)} | Blog`}>
+    <ContextAlert class="mb-4" />
+    <div class="mb-6 flex flex-wrap gap-4">
+        <a href="/blog" class="inline-flex items-center">
+            <span class="mr-2">←</span> Back to all topics
+        </a>
+
+        {
+            isSubtopic && (
+                <a href={`/blog/topic/${topic}`} class="inline-flex items-center">
+                    <span class="mr-2">←</span> Back to {topic}
+                </a>
+            )
+        }
+    </div>
+
+    <h1 class="mb-8">
+        {
+            isSubtopic ? (
+                <>
+                    <span class="text-neutral-500">{topic} &gt; </span>
+                    {subtopic.charAt(0).toUpperCase() + subtopic.slice(1)}
+                </>
+            ) : (
+                topic.charAt(0).toUpperCase() + topic.slice(1)
+            )
+        }
+    </h1>
+
+    <Markdown content={explainer} class="mb-10" />
+
+    {/* Show subtopics if this is a topic page */}
+    {
+        !isSubtopic && relatedSubtopics.length > 0 && (
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold mb-4">Subtopics in {topic}</h2>
+                <div class="flex flex-wrap gap-2">
+                    {relatedSubtopics.map((sub) => (
+                        <a href={`/blog/topic/${topic}/${sub}`} class="px-3 py-1 bg-white rounded-full hover:bg-neutral-100 transition">
+                            {sub}
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    {/* Posts List */}
+    {
+        sortedPosts.length > 0 ? (
+            <div class="grid gap-8 md:grid-cols-2">
+                {sortedPosts.map((post) => (
+                    <a href={`/blog/${post.slug}`} class="no-underline">
+                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                            <div class="p-6">
+                                <p class="text-neutral-500 text-sm mb-2">
+                                    {post.data.date.toLocaleDateString()}
+                                    {!isSubtopic && post.data.subtopic && ` | ${post.data.subtopic}`}
+                                </p>
+                                <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.data.title}</h2>
+                                <p class="line-clamp-3">{post.data.description}</p>
+
+                                {post.data.tags && (
+                                    <div class="flex flex-wrap gap-1 mt-3">
+                                        {post.data.tags.map((tag) => (
+                                            <span class="bg-neutral-100 text-xs px-2 py-1 rounded">{tag}</span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        ) : (
+            <div class="bg-white text-neutral-700 rounded-lg p-6">
+                <p>No posts found in this {isSubtopic ? 'subtopic' : 'topic'}.</p>
+            </div>
+        )
+    }
+</Layout>
+
