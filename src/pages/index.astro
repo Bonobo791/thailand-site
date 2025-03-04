@@ -52,15 +52,14 @@ const formattedFeaturedPages = featuredPages.map((page: CollectionEntry<'pages'>
 });
 
 const explainer = `
-# Welcome to our Content Hub
+# Thai Dreams
 
-Browse topics and pages organized by subject areas and categories.
+Follow a quirky couple through their adventures in Thailand.
 `;
 ---
 
 <Layout title="Content Hub">
     <ContextAlert message="Welcome to the content hub" class="mb-4" />
-    <h1 class="mb-8">Topics</h1>
     <Markdown content={explainer} class="mb-10" />
 
     <!-- Featured Pages Section -->
