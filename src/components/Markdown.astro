@@ -1,7 +1,7 @@
 ---
-import { marked } from 'marked';
-import { markedShiki } from 'marked-shiki';
-import { getHighlighter } from 'shiki';
+import { Marked } from 'marked';
+import markedShiki from 'marked-shiki';
+import { createHighlighter } from 'shiki';
 
 export interface Props {
     content: string;
@@ -10,18 +10,19 @@ export interface Props {
 
 const { content, class: className = '' } = Astro.props;
 
-// `getHighlighter` is async, it initializes the internal and
+// `createHighlighter` is async, it initializes the internal and
 // loads the languages and themes specified.
 // Then later you can use `highlighter.codeToHtml` synchronously
 // with the loaded themes and languages.
-const highlighter = await getHighlighter({
+const highlighter = await createHighlighter({
     langs: ['jsx', 'js'],
     themes: ['min-dark']
 });
-const html = await new marked()
+const marked = new Marked();
+const html = await marked
     .use(
         markedShiki({
-            highlight(code, lang, props) {
+            highlight(code: string, lang: string, props: any) {
                 return highlighter.codeToHtml(code, {
                     lang,
                     theme: 'min-dark'
@@ -29,7 +30,7 @@ const html = await new marked()
             }
         })
     )
-    .parse(content);
+    .parse(content || '');
 ---
 
 <div class={`markdown-content ${className}`}>

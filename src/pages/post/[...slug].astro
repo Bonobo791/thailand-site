@@ -1,38 +1,41 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ContextAlert from '../../components/ContextAlert.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Generate a path for each blog post
 export async function getStaticPaths() {
     const blogEntries = await getCollection('blog');
-    return blogEntries.map((entry) => ({
+    return blogEntries.map((entry: any) => ({
         params: { slug: entry.slug },
         props: { entry }
     }));
 }
 
-const { entry } = Astro.props;
+// Define the proper type for the entry
+type BlogEntry = CollectionEntry<'blog'>;
+
+const { entry }: { entry: BlogEntry } = Astro.props;
 const { Content } = await entry.render();
 
 const { topic, subtopic } = entry.data;
 ---
 
 <Layout title={entry.data.title}>
-    <ContextAlert class="mb-4" />
+    <ContextAlert message={`Viewing: ${entry.data.title}`} class="mb-4" />
     <div class="mb-6 flex flex-wrap gap-4">
         <a href="/" class="inline-flex items-center">
             <span class="mr-2">←</span> All topics
         </a>
 
-        <a href={`/${topic}`} class="inline-flex items-center">
+        <a href={`/blog/topic/${topic}`} class="inline-flex items-center">
             <span class="mr-2">←</span>
             {topic}
         </a>
 
         {
             subtopic && (
-                <a href={`/${topic}/${subtopic}`} class="inline-flex items-center">
+                <a href={`/blog/topic/${topic}/${subtopic}`} class="inline-flex items-center">
                     <span class="mr-2">←</span> {subtopic}
                 </a>
             )
@@ -42,14 +45,14 @@ const { topic, subtopic } = entry.data;
     <div class="bg-white rounded-lg p-8 text-neutral-700">
         <div class="mb-6">
             <div class="mb-3">
-                <a href={`/${topic}`} class="text-sm text-neutral-500 hover:underline mr-2">
+                <a href={`/blog/topic/${topic}`} class="text-sm text-neutral-500 hover:underline mr-2">
                     {topic}
                 </a>
                 {
                     subtopic && (
                         <>
                             <span class="text-neutral-300 mx-1">›</span>
-                            <a href={`/${topic}/${subtopic}`} class="text-sm text-neutral-500 hover:underline">
+                            <a href={`/blog/topic/${topic}/${subtopic}`} class="text-sm text-neutral-500 hover:underline">
                                 {subtopic}
                             </a>
                         </>
@@ -63,7 +66,7 @@ const { topic, subtopic } = entry.data;
             {
                 entry.data.tags && (
                     <div class="flex flex-wrap gap-2 mt-4">
-                        {entry.data.tags.map((tag) => (
+                        {entry.data.tags.map((tag: string) => (
                             <span class="bg-neutral-100 px-2 py-1 rounded text-sm">{tag}</span>
                         ))}
                     </div>
@@ -76,4 +79,3 @@ const { topic, subtopic } = entry.data;
         </div>
     </div>
 </Layout>
-

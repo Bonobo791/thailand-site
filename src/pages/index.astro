@@ -61,7 +61,7 @@ Browse topics and posts organized by subject areas and categories.
 ---
 
 <Layout title="Content Hub">
-    <ContextAlert className="mb-4" />
+    <ContextAlert message="Welcome to the content hub" class="mb-4" />
     <h1 class="mb-8">Topics</h1>
     <Markdown content={explainer} class="mb-10" />
 
@@ -72,7 +72,7 @@ Browse topics and posts organized by subject areas and categories.
                 <div class="bg-white text-neutral-700 rounded-lg overflow-hidden">
                     <div class="p-6">
                         <h2 class="text-xl font-bold text-neutral-900 mb-3">
-                            <a href={`/${topic.name}`} class="hover:underline">
+                            <a href={`/blog/topic/${topic.name}`} class="hover:underline">
                                 {topic.name.charAt(0).toUpperCase() + topic.name.slice(1)}
                             </a>
                         </h2>
@@ -82,7 +82,10 @@ Browse topics and posts organized by subject areas and categories.
                                 <p class="text-sm text-neutral-500 mb-2">Subtopics:</p>
                                 <div class="flex flex-wrap gap-1">
                                     {topic.subtopics.map((subtopic) => (
-                                        <a href={`/${topic.name}/${subtopic}`} class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200">
+                                        <a
+                                            href={`/blog/topic/${topic.name}/${subtopic}`}
+                                            class="text-xs px-2 py-1 bg-neutral-100 rounded-full hover:bg-neutral-200"
+                                        >
                                             {subtopic}
                                         </a>
                                     ))}
@@ -90,7 +93,7 @@ Browse topics and posts organized by subject areas and categories.
                             </div>
                         )}
 
-                        <a href={`/${topic.name}`} class="text-sm text-primary hover:underline">
+                        <a href={`/blog/topic/${topic.name}`} class="text-sm text-primary hover:underline">
                             View all posts →
                         </a>
                     </div>
