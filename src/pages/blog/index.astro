@@ -24,19 +24,25 @@ for dynamic content as well.
     <h1 class="mb-8">Blog</h1>
     <Markdown content={explainer} class="mb-10" />
 
-    <div class="grid gap-8 md:grid-cols-2">
-        {
-            sortedPosts.map((post) => (
-                <a href={post.url} class="no-underline">
-                    <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
-                        <div class="p-6">
-                            <p class="text-neutral-500 text-sm mb-2">{new Date(post.frontmatter.date).toLocaleDateString()}</p>
-                            <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.frontmatter.title}</h2>
-                            <p class="line-clamp-3">{post.frontmatter.description}</p>
+    {
+        sortedPosts.length > 0 ? (
+            <div class="grid gap-8 md:grid-cols-2">
+                {sortedPosts.map((post) => (
+                    <a href={post.url} class="no-underline">
+                        <div class="bg-white text-neutral-700 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]">
+                            <div class="p-6">
+                                <p class="text-neutral-500 text-sm mb-2">{new Date(post.frontmatter.date).toLocaleDateString()}</p>
+                                <h2 class="text-xl font-bold text-neutral-900 mb-2">{post.frontmatter.title}</h2>
+                                <p class="line-clamp-3">{post.frontmatter.description}</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            ))
-        }
-    </div>
+                    </a>
+                ))}
+            </div>
+        ) : (
+            <div class="bg-white text-neutral-700 rounded-lg p-6">
+                <p>No blog posts found. Add markdown files to the posts directory to see them listed here.</p>
+            </div>
+        )
+    }
 </Layout>
