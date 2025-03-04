@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // Get all subdirectories in the thailand/beaches directory
-const currentDir = 'src/pages/thailand/beaches';
+const currentDir = 'src/pages/beaches';
 const allFiles = fs.readdirSync(currentDir, { withFileTypes: true });
 
 // Create a Set to track unique page names (without extensions)
@@ -24,7 +24,7 @@ allFiles.forEach((dirent) => {
 uniquePages.forEach((baseName) => {
     subdirectories.push({
         name: baseName as string,
-        path: `/thailand/beaches/${baseName}`
+        path: `/beaches/${baseName}`
     });
 });
 ---

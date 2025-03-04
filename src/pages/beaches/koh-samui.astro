@@ -4,7 +4,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Get the Koh Samui page from the content collection
 const allPages = await getCollection('pages');
-const kohSamuiPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'thailand/beaches/koh-samui');
+const kohSamuiPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'beaches/koh-samui');
 
 if (!kohSamuiPage) {
     throw new Error('Koh Samui page not found in content collection');

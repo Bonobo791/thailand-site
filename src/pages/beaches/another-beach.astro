@@ -4,7 +4,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Get the Koh Samui page from the content collection
 const allPages = await getCollection('pages');
-const anotherBeachPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'thailand/beaches/another-beach');
+const anotherBeachPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'beaches/another-beach');
 
 if (!anotherBeachPage) {
     throw new Error('Another Beach page not found in content collection');
