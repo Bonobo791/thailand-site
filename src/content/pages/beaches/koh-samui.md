@@ -1,7 +1,7 @@
 ---
 title: "Ko Samui Living Costs and Budget Tips for Digital Nomads: Essential Island Guide"
-description: "Everything you need to know about visiting Ko Samui, Thailand's second-largest island"
-lastUpdated: "2023-12-10"
+description: "Everything you need to know about budgeting for a long-term stay in Ko Samui, Thailand's second-largest island."
+lastUpdated: "2025-03-08"
 order: 2
 featured: true
 ---
