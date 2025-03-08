@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// Get the Ko Samui page from the content collection
+const allPages = await getCollection('pages');
+const KoSamuiPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'beaches/Ko-samui');
+
+if (!KoSamuiPage) {
+    throw new Error('Ko Samui page not found in content collection');
+}
+
+// Get the content directly
+const { Content } = await KoSamuiPage.render();
+---
+
+<Layout title={KoSamuiPage.data.title || 'Ko Samui Travel Guide'}>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">{KoSamuiPage.data.title || 'Ko Samui Travel Guide'}</h1>
+
+        <p class="mb-6">
+            {KoSamuiPage.data.description || "Everything you need to know about visiting Ko Samui, Thailand's second-largest island"}
+        </p>
+
+        <div class="markdown-content">
+            <Content />
+        </div>
+    </div>
+</Layout>
