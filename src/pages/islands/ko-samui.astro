@@ -2,10 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-// Get the Koh Samui page from the content collection 
+// Get the Koh Samui page from the content collection
 // Fix the path to match the actual content structure
 const allPages = await getCollection('pages');
-const kohSamuiPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'beaches/ko-samui');
+const kohSamuiPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'islands/ko-samui');
 
 if (!kohSamuiPage) {
     throw new Error('Ko Samui page not found in content collection');

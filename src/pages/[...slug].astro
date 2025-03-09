@@ -3,9 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-    const pages = await getCollection('pages');
+    const pages = await getCollection('pages' as any);
 
-    return pages.map((page) => ({
+    return pages.map((page: any) => ({
         params: {
             slug: page.slug
         },
