@@ -72,14 +72,6 @@ const formattedFeaturedPages = featuredPages.map((page) => {
 <Layout title="Content Hub">
     <ContextAlert message="Welcome to the content hub" class="mb-4" />
 
-    {
-        homeContent && (
-            <div class="mb-10">
-                <homeContent.Content />
-            </div>
-        )
-    }
-
     <!-- Featured Pages Section -->
     {
         featuredPages.length > 0 && (
@@ -126,4 +118,11 @@ const formattedFeaturedPages = featuredPages.map((page) => {
             ))
         }
     </div>
+    {
+        homeContent && (
+            <div class="mb-10">
+                <homeContent.Content />
+            </div>
+        )
+    }
 </Layout>
