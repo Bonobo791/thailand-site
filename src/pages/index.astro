@@ -10,8 +10,16 @@ const allPages = await getCollection('pages');
 // Extract topics from directory structure
 const topicsMap = new Map<string, Set<string>>();
 
+// Properly type the collection entries
+type PageEntry = CollectionEntry<'pages'>;
+// Use type assertion pattern instead of interface extension
+type PageEntryWithSlug = PageEntry & { slug: string };
+
+// Use proper typing for the collection entry
 allPages.forEach((page) => {
-    const pathParts = page.slug.split('/');
+    // TypeScript workaround to access slug property
+    const typedPage = page as PageEntryWithSlug;
+    const pathParts = typedPage.slug.split('/');
 
     if (pathParts.length > 0) {
         const topic = pathParts[0];
@@ -34,12 +42,14 @@ const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => (
 }));
 
 // Featured pages (if any)
-const featuredPages = allPages.filter((page: CollectionEntry<'pages'>) => page.data.featured);
+const featuredPages = allPages.filter((page) => page.data.featured);
 
 // Fix for lastUpdated - ensure it's a Date object before calling toLocaleDateString
-const formattedFeaturedPages = featuredPages.map((page: CollectionEntry<'pages'>) => {
+const formattedFeaturedPages = featuredPages.map((page) => {
+    const typedPage = page as PageEntryWithSlug;
     return {
         ...page,
+        slug: typedPage.slug,
         formattedDate:
             page.data.lastUpdated instanceof Date
                 ? page.data.lastUpdated.toLocaleDateString('en-US', {
