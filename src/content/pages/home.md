@@ -1,7 +1,7 @@
 ---
 title: "Thailand for Digital Nomads | ThaiDreams"
 description: "Your ultimate resource for living, working, and exploring Thailand as a digital nomad."
-lastUpdated: "2024-03-10"
+lastUpdated: "2025-03-10"
 order: 1
 featured: true
 ---
