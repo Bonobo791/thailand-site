@@ -5,12 +5,14 @@ import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
     const pages = await getCollection('pages' as any);
 
-    return pages.map((page: any) => ({
-        params: {
-            slug: page.slug
-        },
-        props: { page }
-    }));
+    return pages
+        .filter((page: any) => page.slug !== 'home') // Exclude the home page
+        .map((page: any) => ({
+            params: {
+                slug: page.slug
+            },
+            props: { page }
+        }));
 }
 
 const { page } = Astro.props;
