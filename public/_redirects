@@ -1,2 +1,5 @@
 /beaches/*  /islands/:splat  301
 /beaches    /islands      301 
+/thailand/beaches/*  /islands/:splat  301
+/thailand/beaches    /islands      301
+/thailand  /  301 
