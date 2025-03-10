@@ -7,6 +7,10 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 // Get all pages
 const allPages = await getCollection('pages');
 
+// Get the home page content
+const homePage = allPages.find((page) => page.slug === 'home');
+const homeContent = homePage ? await homePage.render() : null;
+
 // Extract topics from directory structure
 const topicsMap = new Map<string, Set<string>>();
 
@@ -23,6 +27,9 @@ allPages.forEach((page) => {
 
     if (pathParts.length > 0) {
         const topic = pathParts[0];
+        // Skip the home page from topic listings
+        if (topic === 'home') return;
+
         const subtopic = pathParts.length > 1 ? pathParts[1] : null;
 
         if (!topicsMap.has(topic)) {
@@ -42,7 +49,7 @@ const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => (
 }));
 
 // Featured pages (if any)
-const featuredPages = allPages.filter((page) => page.data.featured);
+const featuredPages = allPages.filter((page) => page.data.featured && page.slug !== 'home');
 
 // Fix for lastUpdated - ensure it's a Date object before calling toLocaleDateString
 const formattedFeaturedPages = featuredPages.map((page) => {
@@ -60,17 +67,18 @@ const formattedFeaturedPages = featuredPages.map((page) => {
                 : 'Date not available'
     };
 });
-
-const explainer = `
-# Thai Dreams
-
-Follow a quirky Digital Nomad couple through their adventures in Thailand.
-`;
 ---
 
 <Layout title="Content Hub">
     <ContextAlert message="Welcome to the content hub" class="mb-4" />
-    <Markdown content={explainer} class="mb-10" />
+
+    {
+        homeContent && (
+            <div class="mb-10">
+                <homeContent.Content />
+            </div>
+        )
+    }
 
     <!-- Featured Pages Section -->
     {
