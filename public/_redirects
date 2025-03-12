@@ -1,7 +1,5 @@
-/beaches/another-beach  /islands/  301
-/thailand/beaches/koh-samui  /islands/ko-samui  301
-/beaches/*  /islands/:splat  301
-/beaches    /islands      301 
-/thailand/beaches/*  /islands/:splat  301
-/thailand/beaches    /islands      301
+/beaches/another-beach/  /islands/  301
+/thailand/beaches/koh-samui  /islands/ko-samui/  301
+/thailand/beaches/*  /beaches/:splat  301
+/thailand/beaches/    /beaches/     301
 /thailand  /  301
