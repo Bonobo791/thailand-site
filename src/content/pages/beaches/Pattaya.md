@@ -6,12 +6,6 @@ order: 2
 featured: true
 ---
 
-<br>
-
-# Pattaya: Digital Nomad Haven on Thailand's Coast
-
-<br>
-
 Digital nomads choose Pattaya for its fast internet, low costs, and beach lifestyle. The city sits just two hours from Bangkok but offers a more laid-back vibe perfect for remote work. Fiber connections reach 500 Mbps in most areas, letting nomads handle video calls and large file transfers with ease.
 
 <br>
