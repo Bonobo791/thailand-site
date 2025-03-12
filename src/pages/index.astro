@@ -4,7 +4,15 @@ import ContextAlert from '../components/ContextAlert.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 type PageEntry = CollectionEntry<'pages'>;
-interface FormattedPage extends PageEntry {
+interface FormattedPage {
+    data: {
+        title: string;
+        description?: string;
+        lastUpdated?: Date;
+        order?: number;
+        featured?: boolean;
+    };
+    slug: string;
     formattedDate: string;
 }
 
