@@ -3,30 +3,27 @@ import Layout from '../layouts/Layout.astro';
 import ContextAlert from '../components/ContextAlert.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
+type PageEntry = CollectionEntry<'pages'>;
+interface FormattedPage extends PageEntry {
+    formattedDate: string;
+}
+
 // Get all pages
 const allPages = await getCollection('pages');
 
 // Get the home page content
-const homePage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'home');
+const homePage = allPages.find((page: PageEntry) => page.slug === 'home');
 const homeContent = homePage ? await homePage.render() : null;
 
 // Extract topics from directory structure
 const topicsMap = new Map<string, Set<string>>();
 
-// Properly type the collection entries
-type PageEntry = CollectionEntry<'pages'>;
-// Use type assertion pattern instead of interface extension
-type PageEntryWithSlug = PageEntry & { slug: string };
-
-// Use proper typing for the collection entry
-allPages.forEach((page: CollectionEntry<'pages'>) => {
-    // TypeScript workaround to access slug property
-    const typedPage = page as PageEntryWithSlug;
-    const pathParts = typedPage.slug.split('/');
+// Process pages for topics
+allPages.forEach((page: PageEntry) => {
+    const pathParts = page.slug.split('/');
 
     if (pathParts.length > 0) {
         const topic = pathParts[0];
-        // Skip the home page from topic listings
         if (topic === 'home') return;
 
         const subtopic = pathParts.length > 1 ? pathParts[1] : null;
@@ -36,7 +33,7 @@ allPages.forEach((page: CollectionEntry<'pages'>) => {
         }
 
         if (subtopic) {
-            topicsMap.get(topic)!.add(subtopic);
+            topicsMap.get(topic)?.add(subtopic);
         }
     }
 });
@@ -48,24 +45,20 @@ const topics = Array.from(topicsMap.entries()).map(([topicName, subtopics]) => (
 }));
 
 // Featured pages (if any)
-const featuredPages = allPages.filter((page: CollectionEntry<'pages'>) => page.data.featured && page.slug !== 'home');
+const featuredPages = allPages.filter((page: PageEntry) => page.data.featured && page.slug !== 'home');
 
-// Fix for lastUpdated - ensure it's a Date object before calling toLocaleDateString
-const formattedFeaturedPages = featuredPages.map((page: CollectionEntry<'pages'>) => {
-    const typedPage = page as PageEntryWithSlug;
-    return {
-        ...page,
-        slug: typedPage.slug,
-        formattedDate:
-            page.data.lastUpdated instanceof Date
-                ? page.data.lastUpdated.toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                  })
-                : 'Date not available'
-    };
-});
+// Format featured pages with dates
+const formattedFeaturedPages: FormattedPage[] = featuredPages.map((page: PageEntry) => ({
+    ...page,
+    formattedDate:
+        page.data.lastUpdated instanceof Date
+            ? page.data.lastUpdated.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+              })
+            : 'Date not available'
+}));
 ---
 
 <Layout title="ThaiDreams">
