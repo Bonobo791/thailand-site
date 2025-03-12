@@ -43,31 +43,31 @@ Thailand remains the top choice for digital nomads thanks to its low cost of liv
 Let's break down what your Thailand digital nomad budget will look like in 2024, from basic living to luxury:
 
 **Budget Nomad Life: $800-1,200/month**
-- Basic studio or room share: $200-350
-- Street food and local eats: $200-300
-- Thai SIM with 100GB data: $15-20
-- Café work or co-work space: $50-100
-- Local transit and Grab rides: $30-50
-- Simple health plan: $40-60
-- Weekend trips and fun: $100-200
+* Basic studio or room share: $200-350
+* Street food and local eats: $200-300
+* Thai SIM with 100GB data: $15-20
+* Café work or co-work space: $50-100
+* Local transit and Grab rides: $30-50
+* Simple health plan: $40-60
+* Weekend trips and fun: $100-200
 
 **Mid-Range Digital Nomad Budget: $1,200-2,000/month**
-- Modern one-bed condo with pool access: $400-600
-- Blend of local street food and western cafés: $300-400
-- Reliable home wifi + nomad-friendly data plan: $40-60
-- Prime desk at co-working space with fast wifi: $100-180
-- Mix of ride-share apps and monthly scooter rental: $100-150
-- Digital nomad health insurance: $80-120
-- Weekend trips, gym membership, and social events: $200-350
+* Modern one-bed condo with pool access: $400-600
+* Blend of local street food and western cafés: $300-400
+* Reliable home wifi + nomad-friendly data plan: $40-60
+* Prime desk at co-working space with fast wifi: $100-180
+* Mix of ride-share apps and monthly scooter rental: $100-150
+* Digital nomad health insurance: $80-120
+* Weekend trips, gym membership, and social events: $200-350
 
 **Digital Nomad Luxury Budget: $2,000-3,000/month**
-- Upscale condo or villa: $800-1,200
-- Mix of fine dining and local spots: $500-700
-- Fast, stable internet: $60-80
-- Premium coworking desk: $180-250
-- Car rental or daily Grab rides: $300-400
-- Full health plan with nomad perks: $150-200
-- Fitness, weekend trips, nightlife: $400-600
+* Upscale condo or villa: $800-1,200
+* Mix of fine dining and local spots: $500-700
+* Fast, stable internet: $60-80
+* Premium coworking desk: $180-250
+* Car rental or daily Grab rides: $300-400
+* Full health plan with nomad perks: $150-200
+* Fitness, weekend trips, nightlife: $400-600
 
 Budget insights for nomads: Beach hotspots like Phuket and Samui cost 20-30% more than average. Save money by heading north to Chiang Mai, where prices run 30% below Bangkok rates. Stretch your nomad budget by eating local Thai food—it's both cheap and amazing. For the best housing deals, commit to six-month leases to cut your rent by 30-40%.
 
@@ -78,15 +78,15 @@ Most digital nomads discover ideal value in mid-range options, enjoying authenti
 Thailand's top digital nomad hubs each offer their own unique vibe for remote workers:
 
 **Chiang Mai: The Digital Nomad's Dream Base**
-- Cost: Budget-friendly ($700-1,500/month)
-- Internet: Reliable 100+ Mbps in most areas
-- Workspaces: 20+ coworking spots with active nomad communities
-- Feel: Relaxed city with amazing street food and local culture
-- Perfect for: Nomad beginners, budget travelers, and food lovers who want to live like locals
+* Cost: Budget-friendly ($700-1,500/month)
+* Internet: Reliable 100+ Mbps in most areas
+* Workspaces: 20+ coworking spots with active nomad communities
+* Feel: Relaxed city with amazing street food and local culture
+* Perfect for: Nomad beginners, budget travelers, and food lovers who want to live like locals
 
 **Bangkok: The Digital Nomad Metropolis**
-- Cost: Mid-range ($1,200-2,500/month)
-- Internet: Fast and reliable, with 300+ Mbps in most areas
-- Work spots: Over 50 modern coworking spaces, many open 24/7
-- Vibe: Busy city energy meets digital nomad culture
+* Cost: Mid-range ($1,200-2,500/month)
+* Internet: Fast and reliable, with 300+ Mbps in most areas
+* Work spots: Over 50 modern coworking spaces, many open 24/7
+* Vibe: Busy city energy meets digital nomad culture
 
