@@ -26,24 +26,6 @@
 }
 
 @layer components {
-    .markdown > h1,
-    .markdown > h2 {
-        @apply mt-12 mb-6;
-    }
-
-    .markdown > p,
-    .markdown > pre {
-        @apply my-6;
-    }
-
-    .markdown > :first-child {
-        @apply mt-0;
-    }
-
-    .markdown > :last-child {
-        @apply mb-0;
-    }
-
     .btn:disabled {
         @apply text-neutral-400 bg-neutral-700;
     }

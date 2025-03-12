@@ -12,5 +12,14 @@ export default defineConfig({
         })
     ],
     output: 'hybrid',
-    adapter: netlify()
+    adapter: netlify(),
+    markdown: {
+        render: [
+            '@astrojs/markdown-remark',
+            {
+                htmlBefore: true,
+                gfm: true
+            }
+        ]
+    }
 });

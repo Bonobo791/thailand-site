@@ -38,27 +38,3 @@ const html = await marked.parse(content || '');
 <div class={`markdown-content ${className}`}>
     <Fragment set:html={html} />
 </div>
-
-<style>
-    .markdown-content {
-        /* Add your markdown styling here */
-        line-height: 1.6;
-    }
-
-    .markdown-content h1,
-    .markdown-content h2,
-    .markdown-content h3 {
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .markdown-content p {
-        margin-bottom: 1rem;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-        margin-left: 2rem;
-        margin-bottom: 1rem;
-    }
-</style>

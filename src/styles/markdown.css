@@ -1,9 +1,13 @@
 /* Global Markdown Styles */
+.markdown-content {
+    line-height: 1.6;
+}
+
 .markdown-content ul,
 .markdown-content ol {
-    margin: 1rem 0 1rem 1.5rem;
-    padding-left: 0.5rem;
-    line-height: 1.6;
+    margin: 0;
+    padding-left: 2rem;
+    list-style-position: outside;
 }
 
 .markdown-content ul {
@@ -12,7 +16,6 @@
 
 .markdown-content ul ul {
     list-style-type: circle;
-    margin: 0.5rem 0 0.5rem 1.5rem;
 }
 
 .markdown-content ul ul ul {
@@ -25,7 +28,6 @@
 
 .markdown-content ol ol {
     list-style-type: lower-alpha;
-    margin: 0.5rem 0 0.5rem 1.5rem;
 }
 
 .markdown-content ol ol ol {
@@ -33,23 +35,49 @@
 }
 
 .markdown-content li {
-    margin-bottom: 0.5rem;
+    margin: 0.25rem 0;
+}
+
+.markdown-content li:last-child {
+    margin-bottom: 0;
+}
+
+.markdown-content li > p {
+    margin: 0;
+    display: inline;
 }
 
 .markdown-content p {
-    margin-bottom: 1rem;
-    white-space: pre-line;
+    margin: 1rem 0;
+    white-space: pre-wrap;
 }
 
 .markdown-content br {
-    line-height: 2.5;
+    display: block;
+    margin: 0.5rem 0;
+    content: "";
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    margin: 1.5rem 0 1rem;
+    font-weight: 600;
+}
+
+.markdown-content h1 {
+    font-size: 2rem;
+}
+
+.markdown-content h2 {
+    font-size: 1.5rem;
 }
 
 .markdown-content h3 {
     font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
 }
 
 .markdown-content .code-block-wrapper {
