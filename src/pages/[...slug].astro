@@ -1,13 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-    const pages = await getCollection('pages' as any);
+    const pages = await getCollection('pages');
 
     return pages
-        .filter((page: any) => page.slug !== 'home') // Exclude the home page
-        .map((page: any) => ({
+        .filter((page: CollectionEntry<'pages'>) => page.slug !== 'home') // Exclude the home page
+        .map((page: CollectionEntry<'pages'>) => ({
             params: {
                 slug: page.slug
             },
@@ -15,10 +15,20 @@ export async function getStaticPaths() {
         }));
 }
 
+interface Props {
+    page: CollectionEntry<'pages'>;
+}
+
 const { page } = Astro.props;
 const { Content } = await page.render();
 ---
 
 <Layout title={page.data.title}>
-    <Content />
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">{page.data.title}</h1>
+        {page.data.description && <p class="mb-6">{page.data.description}</p>}
+        <div class="markdown-content">
+            <Content />
+        </div>
+    </div>
 </Layout>

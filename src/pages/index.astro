@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ContextAlert from '../components/ContextAlert.astro';
-import Markdown from '../components/Markdown.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Get all pages
@@ -70,59 +69,62 @@ const formattedFeaturedPages = featuredPages.map((page) => {
 ---
 
 <Layout title="ThaiDreams">
-    <ContextAlert message="Follow two quirky digital nomads through their adventures in Thailand!" class="mb-4" />
+    <div class="container mx-auto px-4 py-8">
+        <ContextAlert message="Follow two quirky digital nomads through their adventures in Thailand!" class="mb-8" />
 
-    <!-- Featured Pages Section -->
-    {
-        featuredPages.length > 0 && (
-            <div class="mb-12">
-                <h2 class="mb-4">Featured Content</h2>
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {formattedFeaturedPages.map((page) => (
-                        <div class="p-6 bg-white rounded-lg shadow-md">
-                            <h3 class="mb-2 text-xl font-semibold text-gray-800">{page.data.title}</h3>
-                            <p class="mb-4 text-gray-600">{page.data.description}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-500">{page.formattedDate}</span>
-                                <a href={`/${page.slug}`} class="text-blue-500 hover:underline">
-                                    Read more →
-                                </a>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        )
-    }
-
-    <!-- Topics Section -->
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Featured Pages Section -->
         {
-            topics.map((topic) => (
-                <div class="p-6 bg-white rounded-lg shadow-md">
-                    <h2 class="mb-4 text-xl font-semibold text-gray-800 capitalize">{topic.name.replace(/-/g, ' ')}</h2>
-                    {topic.subtopics.length > 0 ? (
-                        <ul class="space-y-2">
-                            {topic.subtopics.map((subtopic) => (
-                                <li>
-                                    <a href={`/${topic.name}/${subtopic}`} class="text-blue-500 hover:underline capitalize">
-                                        {subtopic.replace(/-/g, ' ')}
+            featuredPages.length > 0 && (
+                <div class="mb-12">
+                    <h2 class="mb-4">Featured Content</h2>
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {formattedFeaturedPages.map((page) => (
+                            <div class="p-6 bg-white rounded-lg shadow-md">
+                                <h3 class="mb-2 text-xl font-semibold text-gray-800">{page.data.title}</h3>
+                                <p class="mb-4 text-gray-600">{page.data.description}</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">{page.formattedDate}</span>
+                                    <a href={`/${page.slug}`} class="text-blue-500 hover:underline">
+                                        Read more →
                                     </a>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p class="text-gray-600">No subcategories found.</p>
-                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            ))
+            )
+        }
+
+        <!-- Topics Section -->
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {
+                topics.map((topic) => (
+                    <div class="p-6 bg-white rounded-lg shadow-md">
+                        <h2 class="mb-4 text-xl font-semibold text-gray-800 capitalize">{topic.name.replace(/-/g, ' ')}</h2>
+                        {topic.subtopics.length > 0 ? (
+                            <ul class="space-y-2">
+                                {topic.subtopics.map((subtopic) => (
+                                    <li>
+                                        <a href={`/${topic.name}/${subtopic}`} class="text-blue-500 hover:underline capitalize">
+                                            {subtopic.replace(/-/g, ' ')}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p class="text-gray-600">No subcategories found.</p>
+                        )}
+                    </div>
+                ))
+            }
+        </div>
+
+        {
+            homeContent && (
+                <div class="mt-12 markdown-content">
+                    <homeContent.Content />
+                </div>
+            )
         }
     </div>
-    {
-        homeContent && (
-            <div class="mb-10">
-                <homeContent.Content />
-            </div>
-        )
-    }
 </Layout>
