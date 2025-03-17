@@ -11,6 +11,3 @@
 /thailand/beaches/*  /beaches/:splat  301
 /thailand/beaches/    /beaches/     301
 /thailand  /  301
-
-# Canonical redirects (pages without trailing slash -> pages with trailing slash)
-/*  /:splat/  301!
