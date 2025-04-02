@@ -17,7 +17,6 @@ export default defineConfig({
         render: [
             '@astrojs/markdown-remark',
             {
-                htmlBefore: true,
                 gfm: true
             }
         ]

@@ -1,12 +1,12 @@
 ---
 title: "Pattaya Retirement"
 description: "Everything you need to know about Pattaya Retirement, including costs, visas, healthcare, and lifestyle considerations."
-lastUpdated: "2025-03-24"
+lastUpdated: "2025-04-02"
 order: 2
 featured: true
 ---
 
-Pattaya retirement is attractive because the cost of living is lower than in many Western countries. Restaurants and alcoholic beverages are reasonably priced. Jomtien Beach offers a more relaxed setting near Pattaya. Vehicle insurance and other expenses are manageable for retirees.
+This is a test paragraph to see if the build process works with simplified content.
 
 Retiring in Pattaya offers benefits like a low cost of living and a large expat community. Pattaya features beaches, shopping, and diverse food, from street food to Thai cuisine. Condominiums and apartments offer housing. Affordable living is available in Pattaya, Thailand.
 

@@ -1,25 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-// Get the Pattaya retirement page from the content collection
+// Get the Koh Samui page from the content collection
+// Fix the path to match the actual content structure
 const allPages = await getCollection('pages');
-const pattayaRetirementPage = allPages.find((page) => page.slug === 'retirement/pattaya-retirement');
+const pattayaRetirementPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'islands/ko-samui');
 
 if (!pattayaRetirementPage) {
-    throw new Error('Pattaya retirement page not found in content collection');
+    throw new Error('Ko Samui page not found in content collection');
 }
 
-// Get the content
+// Get the content directly
 const { Content } = await pattayaRetirementPage.render();
 ---
 
-<Layout title={pattayaRetirementPage.data.title || 'Retirement in Pattaya'}>
+<Layout title={pattayaRetirementPage.data.title || 'Pattaya Retirement'}>
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6">{pattayaRetirementPage.data.title || 'Retirement in Pattaya'}</h1>
+        <h1 class="text-3xl font-bold mb-6">{pattayaRetirementPage.data.title || 'Pattaya Retirement'}</h1>
 
         <p class="mb-6">
-            {pattayaRetirementPage.data.description || 'Everything you need to know about retiring in Pattaya, Thailand'}
+            {pattayaRetirementPage.data.description || "Everything you need to know about visiting Ko Samui, Thailand's second-largest island"}
         </p>
 
         <div class="markdown-content">

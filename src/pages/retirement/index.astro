@@ -1,14 +1,15 @@
+---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 // Get all pages from the "pages" collection
-const allPages = await getCollection('pages');
+const allPages = await getCollection('pages' as any);
 
 // Filter pages that belong to retirement
-const retirementPages = allPages.filter((page) => page.slug.startsWith('retirement/'));
+const islandPages = allPages.filter((page: any) => page.slug.startsWith('retirement/'));
 
 // Format for display
-const subdirectories = retirementPages.map((page: any) => {
+const subdirectories = islandPages.map((page: any) => {
     const baseName = page.slug.replace('retirement/', '');
     return {
         name: baseName,
@@ -17,13 +18,13 @@ const subdirectories = retirementPages.map((page: any) => {
 });
 ---
 
-<Layout title="Retirement in Thailand" description="Explore retirement options in Thailand's beautiful destinations">
-    <h1>Retirement in Thailand</h1>
+<Layout title="Thailand Retirement" description="Discover Thailand's stunning retirement and island destinations">
+    <h1>Thailand retirement</h1>
 
     {
         subdirectories.length > 0 ? (
             <div>
-                <h2>Explore Thailand retirement destinations</h2>
+                <h2>Explore Thailand retirement</h2>
                 <ul>
                     {subdirectories.map((subdir) => (
                         <li>
@@ -33,7 +34,7 @@ const subdirectories = retirementPages.map((page: any) => {
                 </ul>
             </div>
         ) : (
-            <p>No retirement destinations found.</p>
+            <p>No retirement found.</p>
         )
     }
 </Layout>
