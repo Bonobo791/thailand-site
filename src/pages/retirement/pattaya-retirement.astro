@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Get the Pattaya retirement page from the content collection
+const allPages = await getCollection('pages');
+const pattayaRetirementPage = allPages.find((page) => page.slug === 'retirement/pattaya-retirement');
+
+if (!pattayaRetirementPage) {
+    throw new Error('Pattaya retirement page not found in content collection');
+}
+
+// Get the content
+const { Content } = await pattayaRetirementPage.render();
+---
+
+<Layout title={pattayaRetirementPage.data.title || 'Retirement in Pattaya'}>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">{pattayaRetirementPage.data.title || 'Retirement in Pattaya'}</h1>
+
+        <p class="mb-6">
+            {pattayaRetirementPage.data.description || 'Everything you need to know about retiring in Pattaya, Thailand'}
+        </p>
+
+        <div class="markdown-content">
+            <Content />
+        </div>
+    </div>
+</Layout>
