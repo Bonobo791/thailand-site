@@ -6,8 +6,6 @@ order: 2
 featured: true
 ---
 
-This is a test paragraph to see if the build process works with simplified content.
-
 Retiring in Pattaya offers benefits like a low cost of living and a large expat community. Pattaya features beaches, shopping, and diverse food, from street food to Thai cuisine. Condominiums and apartments offer housing. Affordable living is available in Pattaya, Thailand.
 
 <br>
