@@ -5,10 +5,10 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 // Get the Koh Samui page from the content collection
 // Fix the path to match the actual content structure
 const allPages = await getCollection('pages');
-const pattayaRetirementPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'islands/ko-samui');
+const pattayaRetirementPage = allPages.find((page: CollectionEntry<'pages'>) => page.slug === 'retirement/pattaya-retirement');
 
 if (!pattayaRetirementPage) {
-    throw new Error('Ko Samui page not found in content collection');
+    throw new Error('Pattaya Retirement page not found in content collection');
 }
 
 // Get the content directly
