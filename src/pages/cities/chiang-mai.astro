@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getEntryBySlug, type CollectionEntry } from 'astro:content';
+
+// Get the Chiang Mai page directly using its slug
+const ChiangMaiPage = await getEntryBySlug('pages', 'cities/chiang-mai');
+
+if (!ChiangMaiPage) {
+    throw new Error('Chiang Mai page not found in content collection. Check slug: cities/chiang-mai');
+}
+
+// Get the content directly
+const { Content } = await ChiangMaiPage.render();
+---
+
+<Layout title={ChiangMaiPage.data.title || 'Chiang Mai Digital Nomad'}>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">{ChiangMaiPage.data.title || 'Chiang Mai Digital Nomad'}</h1>
+
+        <p class="mb-6">
+            {ChiangMaiPage.data.description || "Everything you need to know about budgeting for a long-term stay in Pattaya, Thailand's party beach."}
+        </p>
+
+        <div class="markdown-content">
+            <Content />
+        </div>
+    </div>
+</Layout>

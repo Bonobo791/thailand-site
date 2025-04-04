@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Get all pages from the "pages" collection
+const allPages = await getCollection('pages' as any);
+
+// Filter pages that belong to cities
+const islandPages = allPages.filter((page: any) => page.slug.startsWith('cities/'));
+
+// Format for display
+const subdirectories = islandPages.map((page: any) => {
+    const baseName = page.slug.replace('cities/', '');
+    return {
+        name: baseName,
+        path: `/cities/${baseName}`
+    };
+});
+---
+
+<Layout title="Thai Cities" description="Explore Thailand's beautiful cities and destinations">
+    <h1>Thailand cities</h1>
+
+    {
+        subdirectories.length > 0 ? (
+            <div>
+                <h2>Explore Thailand cities</h2>
+                <ul>
+                    {subdirectories.map((subdir) => (
+                        <li>
+                            <a href={subdir.path}>{subdir.name.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ) : (
+            <p>No cities found.</p>
+        )
+    }
+</Layout>

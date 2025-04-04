@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "baseUrl": ".",
     "paths": {
       "@components/*": [
